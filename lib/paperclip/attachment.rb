@@ -168,7 +168,11 @@ module Paperclip
     # URL, and the :bucket option refers to the S3 bucket.
     def path(style_name = default_style)
       path = original_filename.nil? ? nil : interpolate(path_option, style_name)
-      path.respond_to?(:unescape) ? path.unescape : path
+      return_val = path.unescape if path.respond_to?(:unescape)
+      return_val = CGI.unescape(path) if defined?(CGI) && CGI.respond_to?(:unescape)
+      return_val = path if path.nil?
+
+      return_val
     end
 
     # :nodoc:
